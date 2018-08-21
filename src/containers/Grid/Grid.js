@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import Cell from '../Cell/Cell';
 import styles from './Grid.css';
 
@@ -15,26 +15,26 @@ class Grid extends Component {
         this.mines = mines;//getRandomInt((rows-1) * (columns-1));
         this.numbersGrid = [];
 
-        for (let i = 0 ; i < this.rows ; i++) {
+        for (let i = 0; i < this.rows; i++) {
             this.numbersGrid.push([]);
-            for (let j = 0 ; j < this.columns ; j++) {
+            for (let j = 0; j < this.columns; j++) {
                 this.numbersGrid[i].push(0);
             }
         }
 
-        for (let mine = 0 ; mine < this.mines ; mine++) {
-            const mineRow = getRandomInt(this.rows); 
+        for (let mine = 0; mine < this.mines; mine++) {
+            const mineRow = getRandomInt(this.rows);
             const mineColumn = getRandomInt(this.columns);
             this.updateNumbersGrid(mineRow, mineColumn)
         }
     }
 
     updateNumbersGrid = (mineRow, mineColumn) => {
-        for (let i = mineRow - 1 ; i < this.rows && i <= mineRow + 1 ; i++) {
+        for (let i = mineRow - 1; i < this.rows && i <= mineRow + 1; i++) {
             if (i < 0) {
                 continue;
             }
-            for (let j = mineColumn - 1 ; j < this.columns && j <= mineColumn + 1 ; j++) {
+            for (let j = mineColumn - 1; j < this.columns && j <= mineColumn + 1; j++) {
                 if (j < 0) {
                     continue;
                 }
@@ -48,20 +48,35 @@ class Grid extends Component {
     }
 
     render() {
-        console.log(this);
         const grid = this.numbersGrid.map((row, rowIndex) => {
             return row.map((number, columnIndex) => {
                 return <Cell key={rowIndex * this.columns + columnIndex} number={number} />;
             });
         });
         grid.forEach((rowElements, index, array) => {
-            array[index] = <div>{rowElements}</div>; 
+            array[index] = <div key={index}> {rowElements} </div>;
         })
 
+        // debug start
+        const revealedGrid = this.numbersGrid.map((row, rowIndex) => {
+            return row.map((number, columnIndex) => {
+                return <Cell key={rowIndex * this.columns + columnIndex} number={number} revealed />;
+            });
+        });
+        revealedGrid.forEach((rowElements, index, array) => {
+            array[index] = <div key={index}> {rowElements} </div>;
+        })
+        // debug end
+
         return (
-            <div className={styles.Grid}>
-            {grid}
-            </div>
+            <React.Fragment>
+                <div className={styles.Grid}>
+                    {grid}
+                </div>
+                <div className={styles.Grid}>
+                    {revealedGrid}
+                </div>
+            </React.Fragment>
         );
     }
 }

@@ -3,5 +3,19 @@
     padding: 1rem;
     border: 1px solid black;
     width: 1rem;
+    height: 1rem;
     text-align: center;
+}
+
+.Cell:after {
+    content: '';
+    display: inline-block;
+}
+
+.Cell:hover {
+    cursor: pointer;
+}
+
+.Clicked {
+    background-color: lightgrey;
 }

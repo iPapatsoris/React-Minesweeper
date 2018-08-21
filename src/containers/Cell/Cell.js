@@ -11,18 +11,31 @@ class Cell extends Component {
         this.mine = false;
         this.number = props.number;
     }
+
+    clickedHandler = () => {
+        if (this.props)
+        this.setState({clicked: true});
+    }
+
     render(props) {
         let cell;
-        if (this.state.clicked) {
+        if (this.state.clicked && this.number) {
             cell = this.number
         } else if (this.state.flag) {
             cell = 'F';
         } else {
-            cell = '-';
+            cell = null;
         }
+
+        const stylesArray = [];
+        stylesArray.push(styles.Cell);
+        if (this.state.clicked && !this.number) {
+            stylesArray.push(styles.Clicked);
+        }
+
         return (
-            <div className={styles.Cell}>
-                {this.number}
+            <div className={stylesArray.join(' ')} onClick={(!this.props.revealed ? this.clickedHandler : null)}>
+                {(this.props.revealed ? this.number : cell)}
             </div>
         );
     }
