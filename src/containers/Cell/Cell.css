@@ -1,0 +1,7 @@
+.Cell {
+    display: inline-block;
+    padding: 1rem;
+    border: 1px solid black;
+    width: 1rem;
+    text-align: center;
+}

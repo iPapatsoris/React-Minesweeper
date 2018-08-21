@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import styles from './Cell.css';
 
 class Cell extends Component {
     constructor(props) {
@@ -20,7 +21,9 @@ class Cell extends Component {
             cell = '-';
         }
         return (
-            this.number
+            <div className={styles.Cell}>
+                {this.number}
+            </div>
         );
     }
 }

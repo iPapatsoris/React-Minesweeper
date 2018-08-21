@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Cell from '../Cell/Cell';
+import styles from './Grid.css';
 
 const rows = 8;
 const columns = 8;
@@ -58,9 +59,9 @@ class Grid extends Component {
         })
 
         return (
-            <React.Fragment>
+            <div className={styles.Grid}>
             {grid}
-            </React.Fragment>
+            </div>
         );
     }
 }
