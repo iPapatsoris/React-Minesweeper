@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import Cell from '../Cell/Cell';
 
 const rows = 8;
 const columns = 8;
@@ -47,8 +48,19 @@ class Grid extends Component {
 
     render() {
         console.log(this);
+        const grid = this.numbersGrid.map((row, rowIndex) => {
+            return row.map((number, columnIndex) => {
+                return <Cell key={rowIndex * this.columns + columnIndex} number={number} />;
+            });
+        });
+        grid.forEach((rowElements, index, array) => {
+            array[index] = <div>{rowElements}</div>; 
+        })
+
         return (
-            <p></p>
+            <React.Fragment>
+            {grid}
+            </React.Fragment>
         );
     }
 }

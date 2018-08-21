@@ -1,24 +1,27 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 class Cell extends Component {
-    state = {
-        mine: false,
-        flag: false,
-        clicked: false,
-        number: 0
-    };
-
-
-    render() {
+    constructor(props) {
+        super(props);
+        this.state = {
+            flag: false,
+            clicked: false,
+        }
+        this.mine = false;
+        this.number = props.number;
+    }
+    render(props) {
         let cell;
         if (this.state.clicked) {
-            cell = this.state.number
+            cell = this.number
         } else if (this.state.flag) {
             cell = 'F';
+        } else {
+            cell = '-';
         }
         return (
-            {cell}
-        ); 
+            this.number
+        );
     }
 }
 
