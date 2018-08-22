@@ -55,9 +55,44 @@ class Grid extends Component {
     }
 
     cellClickedHandler = (row, column) => {
+        if (this.state.grid[row][column].clicked) {
+            return;
+        }
         const updatedGrid = clone2DArrayOfObjects(this.state.grid);
         updatedGrid[row][column].clicked = true;
+        if (!this.numbersGrid[row][column]) {
+            this.propagateEmptyCellClick(updatedGrid, row, column);
+        }
         this.setState({ grid: updatedGrid });
+    }
+
+    /* Expand consecutive adjacent cells on an empty cell click, revealing numbers */
+    propagateEmptyCellClick = (grid, clickedRow, clickedColumn) => {
+        const toExpand = [{
+            row: clickedRow,
+            column: clickedColumn
+        }];
+
+        while (toExpand.length) {
+            const row = toExpand[toExpand.length-1].row;
+            const column = toExpand[toExpand.length-1].column;
+            toExpand.pop();
+
+            for (let i = row - 1; i < this.rows && i <= row + 1; i++) {
+                if (i < 0) {
+                    continue;
+                }
+                for (let j = column - 1; j < this.columns && j <= column + 1; j++) {
+                    if (j < 0 || (i === row && j === column) || grid[i][j].clicked) {
+                        continue;
+                    }
+                    grid[i][j].clicked = true;
+                    if (! this.numbersGrid[i][j]) {
+                        toExpand.push({ row: i, column: j });
+                    }
+                }
+            }
+        }
     }
 
     render() {
@@ -77,11 +112,11 @@ class Grid extends Component {
         // debug start
         const revealedGrid = this.numbersGrid.map((row, rowIndex) => {
             return row.map((cell, columnIndex) => {
-                return <Cell 
-                key={rowIndex * this.columns + columnIndex} 
-                number={cell}
-                {...this.state.grid[rowIndex][columnIndex]}
-                revealed />;
+                return <Cell
+                    key={rowIndex * this.columns + columnIndex}
+                    number={cell}
+                    {...this.state.grid[rowIndex][columnIndex]}
+                    revealed />;
             });
         });
         revealedGrid.forEach((rowElements, index, array) => {
