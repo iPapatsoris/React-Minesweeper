@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Cell from '../../components/Cell/Cell';
+import Result from '../../components/Result/Result';
 import styles from './Grid.css';
 import { getRandomInt, clone2DArrayOfObjects, init2DArray } from '../../shared/Utillity';
 
@@ -152,10 +153,10 @@ class Grid extends Component {
 
         let outcome = null;
         if (this.state.loss) {
-            outcome = <h1 className={styles.Outcome}>You lose!</h1>;
+            outcome = <Result loss />;
         }
         else if (! this.state.cellsLeft) {
-            outcome = <h1 className={styles.Outcome}>You win!</h1>;
+            outcome = <Result win />;
         }
 
         return (

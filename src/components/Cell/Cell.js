@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './Cell.css';
 
-const Cell = (props) => {
+const cell = (props) => {
     let cell;
     if (props.clicked && props.number) {
         if (props.number !== -1) {
@@ -52,4 +52,4 @@ const contextMenuHandler = (e, props) => {
     return (!props.revealed ? props.cellFlaggedHandler() : null);
 }
 
-export default Cell;
+export default cell;
