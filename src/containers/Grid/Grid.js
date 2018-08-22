@@ -18,7 +18,7 @@ class Grid extends Component {
 
         this.state = {
             grid: init2DArray(this.rows, this.columns, {
-                flag: false,
+                flagged: false,
                 clicked: false
             })
         }
@@ -54,12 +54,24 @@ class Grid extends Component {
         }
     }
 
+    cellFlaggedHandler = (row, column) => {
+        if (this.state.grid[row][column].clicked) {
+            return;
+        }
+        const updatedGrid = clone2DArrayOfObjects(this.state.grid);
+        updatedGrid[row][column].flagged = !updatedGrid[row][column].flagged;
+        this.setState({
+            grid: updatedGrid
+        });
+    }
+
     cellClickedHandler = (row, column) => {
         if (this.state.grid[row][column].clicked) {
             return;
         }
         const updatedGrid = clone2DArrayOfObjects(this.state.grid);
         updatedGrid[row][column].clicked = true;
+        updatedGrid[row][column].flagged = false;
         if (!this.numbersGrid[row][column]) {
             this.propagateEmptyCellClick(updatedGrid, row, column);
         }
@@ -87,6 +99,7 @@ class Grid extends Component {
                         continue;
                     }
                     grid[i][j].clicked = true;
+                    grid[i][j].flagged = false;
                     if (! this.numbersGrid[i][j]) {
                         toExpand.push({ row: i, column: j });
                     }
@@ -102,7 +115,8 @@ class Grid extends Component {
                     key={rowIndex * this.columns + columnIndex}
                     number={cell}
                     {...this.state.grid[rowIndex][columnIndex]}
-                    cellClickedHandler={() => this.cellClickedHandler(rowIndex, columnIndex)} />;
+                    cellClickedHandler={() => this.cellClickedHandler(rowIndex, columnIndex)} 
+                    cellFlaggedHandler={() => this.cellFlaggedHandler(rowIndex, columnIndex)}/>;
             });
         });
         grid.forEach((rowElements, index, array) => {

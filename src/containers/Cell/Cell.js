@@ -5,8 +5,8 @@ const Cell = (props) => {
     let cell;
     if (props.clicked && props.number) {
         cell = props.number
-    } else if (props.flag) {
-        cell = 'F';
+    } else if (props.flagged) {
+        cell = <img className={styles.Flag} src="/img/sigodu.png" alt="Flag" />;
     } else {
         cell = null;
     }
@@ -34,10 +34,18 @@ const Cell = (props) => {
     }
 
     return (
-        <div className={stylesArray.join(' ')} onClick={(!props.revealed ? props.cellClickedHandler : null)}>
+        <div 
+            className={stylesArray.join(' ')} 
+            onClick={(!props.revealed ? props.cellClickedHandler : null)}
+            onContextMenu={(e) => (contextMenuHandler(e, props))}>
             {cell}
         </div>
     );
+}
+
+const contextMenuHandler = (e, props) => {
+    e.preventDefault();
+    return (!props.revealed ? props.cellFlaggedHandler() : null);
 }
 
 export default Cell;

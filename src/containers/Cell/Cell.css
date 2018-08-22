@@ -21,6 +21,13 @@
     background-color: lightgrey;
 }
 
+.Flag {
+    width: 78%;
+    height: 78%;
+    position: relative;
+    top: 4px;
+}
+
 .NumberOne {
     color: blue;
 }
