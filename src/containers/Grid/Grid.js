@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Cell from '../Cell/Cell';
+import Cell from '../../components/Cell/Cell';
 import styles from './Grid.css';
 import { getRandomInt, clone2DArrayOfObjects, init2DArray } from '../../shared/Utillity';
 
@@ -149,21 +149,6 @@ class Grid extends Component {
         grid.forEach((rowElements, index, array) => {
             array[index] = <div key={index}> {rowElements} </div>;
         })
-
-        // debug start
-        const revealedGrid = this.numbersGrid.map((row, rowIndex) => {
-            return row.map((cell, columnIndex) => {
-                return <Cell
-                    key={rowIndex * this.columns + columnIndex}
-                    number={cell}
-                    {...this.state.grid[rowIndex][columnIndex]}
-                    revealed />;
-            });
-        });
-        revealedGrid.forEach((rowElements, index, array) => {
-            array[index] = <div key={index}> {rowElements} </div>;
-        })
-        // debug end
 
         let outcome = null;
         if (this.state.loss) {
