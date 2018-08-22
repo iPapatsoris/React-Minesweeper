@@ -31,8 +31,11 @@ class Grid extends Component {
     fillNumbersGrid = () => {
         const grid = init2DArray(this.rows, this.columns, 0);
         for (let mine = 0; mine < this.mines; mine++) {
-            const mineRow = getRandomInt(this.rows);
-            const mineColumn = getRandomInt(this.columns);
+            let mineRow, mineColumn;
+            do {
+                mineRow = getRandomInt(this.rows);
+                mineColumn = getRandomInt(this.columns);
+            } while (grid[mineRow][mineColumn] === -1);
             this.addMine(grid, mineRow, mineColumn)
         }
         return grid;
