@@ -5,7 +5,7 @@ import { getRandomInt, clone2DArrayOfObjects, init2DArray } from '../../shared/U
 
 const rows = 8;
 const columns = 8;
-const mines = 5;
+const mines = 10;
 
 class Grid extends Component {
     constructor(props) {
@@ -13,14 +13,16 @@ class Grid extends Component {
 
         this.rows = rows;
         this.columns = columns;
-        this.mines = mines;//getRandomInt((rows-1) * (columns-1));
-        this.numbersGrid = this.fillNumbersGrid(); // Outside of state 'cause it doesn't change
+        this.mines = mines; //getRandomInt((rows-1) * (columns-1));
+        this.numbersGrid = this.fillNumbersGrid();
 
         this.state = {
             grid: init2DArray(this.rows, this.columns, {
                 flagged: false,
                 clicked: false
-            })
+            }),
+            cellsLeft: (this.rows * this.columns) - mines,
+            loss: false
         }
     }
 
@@ -69,13 +71,23 @@ class Grid extends Component {
         if (this.state.grid[row][column].clicked) {
             return;
         }
+        if (this.numbersGrid[row][column] === -1) {
+            this.setState({loss: true});
+            this.revealGrid();
+            return;
+        }
         const updatedGrid = clone2DArrayOfObjects(this.state.grid);
         updatedGrid[row][column].clicked = true;
         updatedGrid[row][column].flagged = false;
         if (!this.numbersGrid[row][column]) {
             this.propagateEmptyCellClick(updatedGrid, row, column);
         }
-        this.setState({ grid: updatedGrid });
+        this.setState((prevState) => { 
+            return {
+                grid: updatedGrid,
+                cellsLeft: prevState.cellsLeft - 1
+            };
+        });        
     }
 
     /* Expand consecutive adjacent cells on an empty cell click, revealing numbers */
@@ -100,12 +112,27 @@ class Grid extends Component {
                     }
                     grid[i][j].clicked = true;
                     grid[i][j].flagged = false;
+                    this.setState((prevState) => {
+                        return {
+                            cellsLeft: prevState.cellsLeft - 1
+                        };
+                    });                  
                     if (! this.numbersGrid[i][j]) {
                         toExpand.push({ row: i, column: j });
                     }
                 }
             }
         }
+    }
+
+    revealGrid = () => {
+        const updatedGrid = clone2DArrayOfObjects(this.state.grid);
+        updatedGrid.forEach((row, rowIndex, grid) => {
+            row.forEach((cell, columnIndex) => {
+                cell.clicked = true;
+            });
+        });
+        this.setState({grid: updatedGrid});
     }
 
     render() {
@@ -138,14 +165,20 @@ class Grid extends Component {
         })
         // debug end
 
+        let outcome = null;
+        if (this.state.loss) {
+            outcome = <h1 className={styles.Outcome}>You lose!</h1>;
+        }
+        else if (! this.state.cellsLeft) {
+            outcome = <h1 className={styles.Outcome}>You win!</h1>;
+        }
+
         return (
             <React.Fragment>
                 <div className={styles.Grid}>
                     {grid}
                 </div>
-                <div className={styles.Grid}>
-                    {revealedGrid}
-                </div>
+                {outcome}
             </React.Fragment>
         );
     }

@@ -4,7 +4,11 @@ import styles from './Cell.css';
 const Cell = (props) => {
     let cell;
     if (props.clicked && props.number) {
-        cell = props.number
+        if (props.number !== -1) {
+            cell = props.number;
+        } else {
+            cell = <img className={styles.Flag} src="/img/bomb.png" alt="Bomb" />;
+        }
     } else if (props.flagged) {
         cell = <img className={styles.Flag} src="/img/sigodu.png" alt="Flag" />;
     } else {
