@@ -1,44 +1,37 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styles from './Cell.css';
 
-class Cell extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            flag: false,
-            clicked: false,
-        }
-        this.mine = false;
-        this.number = props.number;
+const Cell = (props) => {
+    let cell;
+    if (props.clicked && props.number) {
+        cell = props.number
+    } else if (props.flag) {
+        cell = 'F';
+    } else {
+        cell = null;
     }
 
-    clickedHandler = () => {
-        if (this.props)
-        this.setState({clicked: true});
+    const stylesArray = [];
+    stylesArray.push(styles.Cell);
+    if (props.clicked && !props.number) {
+        stylesArray.push(styles.Clicked);
     }
 
-    render(props) {
-        let cell;
-        if (this.state.clicked && this.number) {
-            cell = this.number
-        } else if (this.state.flag) {
-            cell = 'F';
-        } else {
+    if (props.revealed) {
+        if (!props.number) {
+            stylesArray.push(styles.Clicked);
             cell = null;
         }
-
-        const stylesArray = [];
-        stylesArray.push(styles.Cell);
-        if (this.state.clicked && !this.number) {
-            stylesArray.push(styles.Clicked);
+        else {
+            cell = props.number;
         }
-
-        return (
-            <div className={stylesArray.join(' ')} onClick={(!this.props.revealed ? this.clickedHandler : null)}>
-                {(this.props.revealed ? this.number : cell)}
-            </div>
-        );
     }
+
+    return (
+        <div className={stylesArray.join(' ')} onClick={(!props.revealed ? props.cellClickedHandler : null)}>
+            {cell}
+        </div>
+    );
 }
 
 export default Cell;

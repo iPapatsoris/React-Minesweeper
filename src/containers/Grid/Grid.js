@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Cell from '../Cell/Cell';
 import styles from './Grid.css';
+import { getRandomInt, clone2DArrayOfObjects, init2DArray } from '../../shared/Utillity';
 
 const rows = 8;
 const columns = 8;
@@ -13,23 +14,29 @@ class Grid extends Component {
         this.rows = rows;
         this.columns = columns;
         this.mines = mines;//getRandomInt((rows-1) * (columns-1));
-        this.numbersGrid = [];
+        this.numbersGrid = this.fillNumbersGrid(); // Outside of state 'cause it doesn't change
 
-        for (let i = 0; i < this.rows; i++) {
-            this.numbersGrid.push([]);
-            for (let j = 0; j < this.columns; j++) {
-                this.numbersGrid[i].push(0);
-            }
-        }
-
-        for (let mine = 0; mine < this.mines; mine++) {
-            const mineRow = getRandomInt(this.rows);
-            const mineColumn = getRandomInt(this.columns);
-            this.updateNumbersGrid(mineRow, mineColumn)
+        this.state = {
+            grid: init2DArray(this.rows, this.columns, {
+                flag: false,
+                clicked: false
+            })
         }
     }
 
-    updateNumbersGrid = (mineRow, mineColumn) => {
+    /* Initialise grid with numbers and add mines */
+    fillNumbersGrid = () => {
+        const grid = init2DArray(this.rows, this.columns, 0);
+        for (let mine = 0; mine < this.mines; mine++) {
+            const mineRow = getRandomInt(this.rows);
+            const mineColumn = getRandomInt(this.columns);
+            this.addMine(grid, mineRow, mineColumn)
+        }
+        return grid;
+    }
+
+    /* Add a mine, updating adjacent cell numbers */
+    addMine = (grid, mineRow, mineColumn) => {
         for (let i = mineRow - 1; i < this.rows && i <= mineRow + 1; i++) {
             if (i < 0) {
                 continue;
@@ -39,18 +46,28 @@ class Grid extends Component {
                     continue;
                 }
                 if (i === mineRow && j === mineColumn) {
-                    this.numbersGrid[i][j] = -1;
-                } else if (this.numbersGrid[i][j] !== -1) {
-                    this.numbersGrid[i][j]++;
+                    grid[i][j] = -1;
+                } else if (grid[i][j] !== -1) {
+                    grid[i][j]++;
                 }
             }
         }
     }
 
+    cellClickedHandler = (row, column) => {
+        const updatedGrid = clone2DArrayOfObjects(this.state.grid);
+        updatedGrid[row][column].clicked = true;
+        this.setState({ grid: updatedGrid });
+    }
+
     render() {
         const grid = this.numbersGrid.map((row, rowIndex) => {
-            return row.map((number, columnIndex) => {
-                return <Cell key={rowIndex * this.columns + columnIndex} number={number} />;
+            return row.map((cell, columnIndex) => {
+                return <Cell
+                    key={rowIndex * this.columns + columnIndex}
+                    number={cell}
+                    {...this.state.grid[rowIndex][columnIndex]}
+                    cellClickedHandler={() => this.cellClickedHandler(rowIndex, columnIndex)} />;
             });
         });
         grid.forEach((rowElements, index, array) => {
@@ -59,8 +76,12 @@ class Grid extends Component {
 
         // debug start
         const revealedGrid = this.numbersGrid.map((row, rowIndex) => {
-            return row.map((number, columnIndex) => {
-                return <Cell key={rowIndex * this.columns + columnIndex} number={number} revealed />;
+            return row.map((cell, columnIndex) => {
+                return <Cell 
+                key={rowIndex * this.columns + columnIndex} 
+                number={cell}
+                {...this.state.grid[rowIndex][columnIndex]}
+                revealed />;
             });
         });
         revealedGrid.forEach((rowElements, index, array) => {
@@ -81,8 +102,5 @@ class Grid extends Component {
     }
 }
 
-const getRandomInt = (max) => {
-    return Math.floor(Math.random() * Math.floor(max));
-}
 
 export default Grid;
