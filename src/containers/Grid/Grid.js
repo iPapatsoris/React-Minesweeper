@@ -73,7 +73,7 @@ class Grid extends Component {
             return;
         }
         if (this.numbersGrid[row][column] === -1) {
-            this.setState({loss: true});
+            this.setState({ loss: true });
             this.revealGrid();
             return;
         }
@@ -83,12 +83,12 @@ class Grid extends Component {
         if (!this.numbersGrid[row][column]) {
             this.propagateEmptyCellClick(updatedGrid, row, column);
         }
-        this.setState((prevState) => { 
+        this.setState((prevState) => {
             return {
                 grid: updatedGrid,
                 cellsLeft: prevState.cellsLeft - 1
             };
-        });        
+        });
     }
 
     /* Expand consecutive adjacent cells on an empty cell click, revealing numbers */
@@ -99,8 +99,8 @@ class Grid extends Component {
         }];
 
         while (toExpand.length) {
-            const row = toExpand[toExpand.length-1].row;
-            const column = toExpand[toExpand.length-1].column;
+            const row = toExpand[toExpand.length - 1].row;
+            const column = toExpand[toExpand.length - 1].column;
             toExpand.pop();
 
             for (let i = row - 1; i < this.rows && i <= row + 1; i++) {
@@ -117,8 +117,8 @@ class Grid extends Component {
                         return {
                             cellsLeft: prevState.cellsLeft - 1
                         };
-                    });                  
-                    if (! this.numbersGrid[i][j]) {
+                    });
+                    if (!this.numbersGrid[i][j]) {
                         toExpand.push({ row: i, column: j });
                     }
                 }
@@ -133,7 +133,20 @@ class Grid extends Component {
                 cell.clicked = true;
             });
         });
-        this.setState({grid: updatedGrid});
+        this.setState({ grid: updatedGrid });
+    }
+
+    resetGridHandler = () => {
+        this.numbersGrid = this.fillNumbersGrid();
+        const updatedGrid = init2DArray(this.rows, this.columns, {
+            flagged: false,
+            clicked: false
+        });
+        this.setState({
+            grid: updatedGrid,
+            cellsLeft: (this.rows * this.columns) - mines,
+            loss: false
+        })
     }
 
     render() {
@@ -143,8 +156,8 @@ class Grid extends Component {
                     key={rowIndex * this.columns + columnIndex}
                     number={cell}
                     {...this.state.grid[rowIndex][columnIndex]}
-                    cellClickedHandler={() => this.cellClickedHandler(rowIndex, columnIndex)} 
-                    cellFlaggedHandler={() => this.cellFlaggedHandler(rowIndex, columnIndex)}/>;
+                    cellClickedHandler={() => this.cellClickedHandler(rowIndex, columnIndex)}
+                    cellFlaggedHandler={() => this.cellFlaggedHandler(rowIndex, columnIndex)} />;
             });
         });
         grid.forEach((rowElements, index, array) => {
@@ -153,10 +166,10 @@ class Grid extends Component {
 
         let outcome = null;
         if (this.state.loss) {
-            outcome = <Result loss />;
+            outcome = <Result loss resetGridHandler={this.resetGridHandler} />;
         }
-        else if (! this.state.cellsLeft) {
-            outcome = <Result win />;
+        else if (!this.state.cellsLeft) {
+            outcome = <Result win resetGridHandler={this.resetGridHandler} />;
         }
 
         return (
@@ -169,6 +182,4 @@ class Grid extends Component {
         );
     }
 }
-
-
 export default Grid;
