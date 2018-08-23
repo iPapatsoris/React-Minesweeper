@@ -17,7 +17,7 @@ const cell = (props) => {
 
     const stylesArray = [];
     stylesArray.push(styles.Cell);
-    if (props.clicked || props.revealed) {
+    if (props.clicked) {
         switch (props.number) {
             case 0: stylesArray.push(styles.Clicked); break;
             case 1: stylesArray.push(styles.NumberOne); break;
@@ -27,20 +27,10 @@ const cell = (props) => {
         }
     }
 
-    if (props.revealed) {
-        if (!props.number) {
-            stylesArray.push(styles.Clicked);
-            cell = null;
-        }
-        else {
-            cell = props.number;
-        }
-    }
-
     return (
         <div 
             className={stylesArray.join(' ')} 
-            onClick={(!props.revealed ? props.cellClickedHandler : null)}
+            onClick={props.cellClickedHandler}
             onContextMenu={(e) => (contextMenuHandler(e, props))}>
             {cell}
         </div>
@@ -49,7 +39,7 @@ const cell = (props) => {
 
 const contextMenuHandler = (e, props) => {
     e.preventDefault();
-    return (!props.revealed ? props.cellFlaggedHandler() : null);
+    return props.cellFlaggedHandler();
 }
 
 export default cell;
