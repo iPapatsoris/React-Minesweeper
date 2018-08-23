@@ -154,18 +154,17 @@ class Grid extends Component {
 
     render() {
         const grid = this.numbersGrid.map((row, rowIndex) => {
-            return row.map((cell, columnIndex) => {
-                return <Cell
-                    key={rowIndex * this.columns + columnIndex}
-                    number={cell}
-                    {...this.state.grid[rowIndex][columnIndex]}
-                    cellClickedHandler={() => this.cellClickedHandler(rowIndex, columnIndex)}
-                    cellFlaggedHandler={() => this.cellFlaggedHandler(rowIndex, columnIndex)} />;
-            });
+            return <div key={rowIndex}>
+                {row.map((cell, columnIndex) => {
+                    return <Cell
+                        key={rowIndex * this.columns + columnIndex}
+                        number={cell}
+                        {...this.state.grid[rowIndex][columnIndex]}
+                        cellClickedHandler={() => this.cellClickedHandler(rowIndex, columnIndex)}
+                        cellFlaggedHandler={() => this.cellFlaggedHandler(rowIndex, columnIndex)} />;
+                })}
+            </div>;
         });
-        grid.forEach((rowElements, index, array) => {
-            array[index] = <div key={index}> {rowElements} </div>;
-        })
 
         let result = null;
         if (this.state.loss) {
