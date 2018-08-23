@@ -7,10 +7,10 @@ const cell = (props) => {
         if (props.number !== -1) {
             cell = props.number;
         } else {
-            cell = <img className={styles.Flag} src="/img/bomb.png" alt="Bomb" />;
+            cell = <img className={styles.Flag} src="img/bomb.png" alt="Bomb" />;
         }
     } else if (props.flagged) {
-        cell = <img className={styles.Flag} src="/img/sigodu.png" alt="Flag" />;
+        cell = <img className={styles.Flag} src="img/sigodu.png" alt="Flag" />;
     } else {
         cell = null;
     }
