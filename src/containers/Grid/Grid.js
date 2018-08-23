@@ -167,12 +167,12 @@ class Grid extends Component {
             array[index] = <div key={index}> {rowElements} </div>;
         })
 
-        let outcome = null;
+        let result = null;
         if (this.state.loss) {
-            outcome = <Result loss resetGridHandler={this.resetGridHandler} />;
+            result = <Result loss resetGridHandler={this.resetGridHandler} />;
         }
         else if (!this.state.cellsLeft) {
-            outcome = <Result win resetGridHandler={this.resetGridHandler} />;
+            result = <Result win resetGridHandler={this.resetGridHandler} />;
         }
 
         return (
@@ -180,7 +180,7 @@ class Grid extends Component {
                 <div className={styles.Grid}>
                     {grid}
                 </div>
-                {outcome}
+                {result}
             </React.Fragment>
         );
     }
